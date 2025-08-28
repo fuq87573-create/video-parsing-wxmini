@@ -1,0 +1,104 @@
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">解析记录</view>
+</cu-custom>
+<view class="cu-card article">
+  <view class="cu-item shadow">
+    <view class="title">
+      <view class="text-red">注意</view>
+    </view>
+    <view class="content">
+      <view class="desc">
+        <view class="text-content">
+         解析记录只查询30分钟以内。
+        </view>
+      </view>
+    </view>
+</view>
+
+  <view class="cu-item shadow" style="padding-bottom: 5rpx;" wx:if="{{!parsingInfo}}">
+    <view class="title">
+      <view class="text-red">您暂无解析记录!</view>
+    </view>
+  </view>
+
+</view>
+<view class="cu-card case" wx:if="{{parsingInfo}}" wx:key>
+  <view class="cu-item shadow" wx:for="{{parsingInfo}}" wx:key="key" style="margin-bottom: 30rpx;">
+    <!-- 统一标题显示 -->
+    <view class="title" style="margin-bottom: 20rpx;">
+      <view class="text-xl text-bold text-black">{{item.videoTitle || '未知标题'}}</view>
+      <view class="text-sm text-gray margin-top-sm">解析时间: {{item.formatTime}}</view>
+    </view>
+    
+    <!-- 视频内容 -->
+    <view class="content-section" wx:if="{{item.parsedVideoUrl}}">
+      <view class="section-header">
+        <view class="cu-tag bg-blue light sm">视频内容</view>
+      </view>
+      <view class="video-container" style="margin: 20rpx 0;">
+        <video src="{{item.parsedVideoUrl}}" mode="widthFix" controls="false" muted="true" custom-cache="{{false}}" style="width:100%; border-radius: 10rpx;" ></video>
+      </view>
+      <view class="action-btn">
+        <button data-url="{{item.parsedVideoUrl}}"
+          class="cu-btn bg-blue lg block"
+          bindtap="saveVideo">
+          <text class="cuIcon-down margin-right-xs"></text>下载视频
+        </button>
+      </view>
+    </view>
+    
+    <!-- 图片集内容 -->
+    <view class="content-section" wx:if="{{item.imageAtlas && item.imageAtlas.length > 0}}" style="margin-top: 30rpx;">
+      <view class="section-header">
+        <view class="cu-tag bg-green light sm">图片集 ({{item.imageAtlas.length}}张)</view>
+      </view>
+      <scroll-view class="scroll-view_H" scroll-x="true" style="white-space: nowrap; margin: 20rpx 0; padding: 10rpx 0;">
+        <view class="image-item" wx:for="{{item.imageAtlas}}" wx:key="index" wx:for-item="imageUrl" style="display: inline-block; margin-right: 15rpx;">
+          <image src="{{imageUrl}}" mode="aspectFit" style="width: 220rpx; height: 220rpx; border-radius: 15rpx; box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);"></image>
+        </view>
+      </scroll-view>
+      <view class="action-btn">
+        <button data-images="{{item.imageAtlas}}"
+          class="cu-btn bg-green lg block"
+          bindtap="saveImages">
+          <text class="cuIcon-down margin-right-xs"></text>下载图片集
+        </button>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 下载进度模态框 -->
+<view class="cu-modal {{showProgress?'show':''}}">
+  <view class="cu-dialog" style="width: 80%;">
+    <view class="cu-bar bg-white justify-center">
+      <view class="content">下载进度</view>
+    </view>
+    <view class="padding">
+      <view class="text-center margin-bottom">
+        <text class="text-lg text-bold">{{downloadProgress}}%</text>
+      </view>
+      <view class="cu-progress round">
+        <view class="bg-green" style="width: {{downloadProgress}}%;"></view>
+      </view>
+      <view class="margin-top-sm text-center">
+        <view class="text-sm text-gray">{{downloadStatus}}</view>
+        <view class="text-sm text-gray" wx:if="{{downloadSpeed}}">速度: {{downloadSpeed}}</view>
+        <view class="text-sm text-gray" wx:if="{{estimatedTime}}">预计剩余: {{estimatedTime}}</view>
+      </view>
+      <view class="cu-bar bg-white justify-center margin-top">
+        <view class="action">
+          <button class="cu-btn bg-red sm" bindtap="cancelDownload">
+            <text class="cuIcon-close margin-right-xs"></text>取消下载
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 原有的简单加载提示（用于图片保存等其他场景） -->
+<view class='cu-load load-modal' wx:if="{{isDownload && !showProgress}}">
+  <view class='gray-text'>{{downloadText || '保存中...'}}</view>
+</view>

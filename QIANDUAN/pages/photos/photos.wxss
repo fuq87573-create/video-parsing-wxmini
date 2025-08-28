@@ -1,0 +1,97 @@
+/* 解析记录页面样式 */
+
+.cu-item {
+  border-radius: 20rpx !important;
+  overflow: hidden;
+}
+
+.title {
+  padding: 20rpx 30rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+  margin-bottom: 20rpx !important;
+}
+
+.content-section {
+  padding: 0 30rpx;
+}
+
+.section-header {
+  margin-bottom: 15rpx;
+  display: flex;
+  align-items: center;
+}
+
+.video-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 15rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.1);
+}
+
+.scroll-view_H {
+  background: #f8f9fa;
+  border-radius: 15rpx;
+  padding: 15rpx;
+}
+
+.image-item {
+  position: relative;
+}
+
+.image-item image {
+  transition: transform 0.3s ease;
+}
+
+.image-item:active image {
+  transform: scale(0.95);
+}
+
+.action-btn {
+  padding: 20rpx 0 30rpx;
+}
+
+.cu-btn {
+  border-radius: 50rpx !important;
+  font-weight: bold;
+  box-shadow: 0 4rpx 15rpx rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.cu-btn:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.15);
+}
+
+.cu-btn.bg-blue {
+  background: linear-gradient(45deg, #007AFF, #5AC8FA) !important;
+}
+
+.cu-btn.bg-green {
+  background: linear-gradient(45deg, #34C759, #30D158) !important;
+}
+
+.text-gray {
+  color: #8E8E93 !important;
+}
+
+.margin-top-sm {
+  margin-top: 10rpx;
+}
+
+.margin-right-xs {
+  margin-right: 8rpx;
+}
+
+/* 加载动画优化 */
+.cu-load.load-modal {
+  background: rgba(0,0,0,0.6) !important;
+  backdrop-filter: blur(10rpx);
+}
+
+.cu-load .gray-text {
+  background: rgba(255,255,255,0.9);
+  padding: 30rpx 50rpx;
+  border-radius: 20rpx;
+  font-weight: bold;
+  color: #333 !important;
+}

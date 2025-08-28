@@ -1,0 +1,333 @@
+# 视频解析项目 Nginx 配置示例
+# 请根据实际情况修改域名、SSL证书路径等配置
+
+# HTTPS服务器配置
+server {
+    listen       443 ssl default_server;
+    server_name  www.yourdomain.com yourdomain.com *.yourdomain.com;
+
+    # SSL配置 - 请替换为您的SSL证书路径
+    ssl_certificate      /path/to/your/ssl/certificate.pem;
+    ssl_certificate_key  /path/to/your/ssl/private.key;
+    ssl_session_cache    shared:SSL:1m;
+    ssl_session_timeout  5m;
+    ssl_ciphers  HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers  on;
+
+    # 主API代理配置
+    location /Video/ {
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header REMOTE-HOST $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://localhost:8086/;
+    }
+
+    # 视频代理配置 - 抖音
+    location ~ ^/proxy/douyin/(.+)$ {
+        proxy_pass http://127.0.0.1:8086/api/proxy/decode/douyin/$1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # 大文件下载优化
+        client_max_body_size 2G;
+        client_body_timeout 300s;
+        
+        # 超时设置 - 针对大文件优化
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 300s;
+        proxy_read_timeout 300s;
+        
+        # 缓冲设置 - 大文件优化
+        proxy_buffering off;  # 关闭缓冲，直接流式传输
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        
+        # 连接优化
+        proxy_ignore_client_abort on;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+    
+    # 视频代理配置 - 快手
+    location ~ ^/proxy/kuaishou/(.+)$ {
+        proxy_pass http://127.0.0.1:8086/api/proxy/decode/kuaishou/$1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # 大文件下载优化
+        client_max_body_size 2G;
+        client_body_timeout 300s;
+        
+        # 超时设置 - 针对大文件优化
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 300s;
+        proxy_read_timeout 300s;
+        
+        # 缓冲设置 - 大文件优化
+        proxy_buffering off;  # 关闭缓冲，直接流式传输
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        
+        # 连接优化
+        proxy_ignore_client_abort on;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+    
+    # 视频代理配置 - 小红书
+    location ~ ^/proxy/xiaohongshu/(.+)$ {
+        proxy_pass http://127.0.0.1:8086/api/proxy/decode/xiaohongshu/$1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # 大文件下载优化
+        client_max_body_size 2G;
+        client_body_timeout 300s;
+        
+        # 超时设置 - 针对大文件优化
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 300s;
+        proxy_read_timeout 300s;
+        
+        # 缓冲设置 - 大文件优化
+        proxy_buffering off;  # 关闭缓冲，直接流式传输
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        
+        # 连接优化
+        proxy_ignore_client_abort on;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+    
+    # 视频代理配置 - B站
+    location ~ ^/proxy/bilibili/(.+)$ {
+        proxy_pass http://127.0.0.1:8086/api/proxy/decode/bilibili/$1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # 大文件下载优化
+        client_max_body_size 2G;
+        client_body_timeout 300s;
+        
+        # 超时设置 - 针对大文件优化
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 300s;
+        proxy_read_timeout 300s;
+        
+        # 缓冲设置 - 大文件优化
+        proxy_buffering off;  # 关闭缓冲，直接流式传输
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        
+        # 连接优化
+        proxy_ignore_client_abort on;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+    
+    # 视频代理配置 - 微博
+    location ~ ^/proxy/weibo/(.+)$ {
+        proxy_pass http://127.0.0.1:8086/api/proxy/decode/weibo/$1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # 大文件下载优化
+        client_max_body_size 2G;
+        client_body_timeout 300s;
+        
+        # 超时设置 - 针对大文件优化
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 300s;
+        proxy_read_timeout 300s;
+        
+        # 缓冲设置 - 大文件优化
+        proxy_buffering off;  # 关闭缓冲，直接流式传输
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        
+        # 连接优化
+        proxy_ignore_client_abort on;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+    
+    # 视频代理配置 - 西瓜视频
+    location ~ ^/proxy/xigua/(.+)$ {
+        proxy_pass http://127.0.0.1:8086/api/proxy/decode/xigua/$1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # 大文件下载优化
+        client_max_body_size 2G;
+        client_body_timeout 300s;
+        
+        # 超时设置 - 针对大文件优化
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 300s;
+        proxy_read_timeout 300s;
+        
+        # 缓冲设置 - 大文件优化
+        proxy_buffering off;  # 关闭缓冲，直接流式传输
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        
+        # 连接优化
+        proxy_ignore_client_abort on;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+    
+    # 视频代理配置 - 好看视频
+    location ~ ^/proxy/haokan/(.+)$ {
+        proxy_pass http://127.0.0.1:8086/api/proxy/decode/haokan/$1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # 大文件下载优化
+        client_max_body_size 2G;
+        client_body_timeout 300s;
+        
+        # 超时设置 - 针对大文件优化
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 300s;
+        proxy_read_timeout 300s;
+        
+        # 缓冲设置 - 大文件优化
+        proxy_buffering off;  # 关闭缓冲，直接流式传输
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        
+        # 连接优化
+        proxy_ignore_client_abort on;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+    
+    # 视频代理配置 - 皮皮虾
+    location ~ ^/proxy/pipixia/(.+)$ {
+        proxy_pass http://127.0.0.1:8086/api/proxy/decode/pipixia/$1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # 大文件下载优化
+        client_max_body_size 2G;
+        client_body_timeout 300s;
+        
+        # 超时设置 - 针对大文件优化
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 300s;
+        proxy_read_timeout 300s;
+        
+        # 缓冲设置 - 大文件优化
+        proxy_buffering off;  # 关闭缓冲，直接流式传输
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        
+        # 连接优化
+        proxy_ignore_client_abort on;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+    
+    # 视频代理配置 - 火山小视频
+    location ~ ^/proxy/huoshan/(.+)$ {
+        proxy_pass http://127.0.0.1:8086/api/proxy/decode/huoshan/$1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # 大文件下载优化
+        client_max_body_size 2G;
+        client_body_timeout 300s;
+        
+        # 超时设置 - 针对大文件优化
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 300s;
+        proxy_read_timeout 300s;
+        
+        # 缓冲设置 - 大文件优化
+        proxy_buffering off;  # 关闭缓冲，直接流式传输
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        
+        # 连接优化
+        proxy_ignore_client_abort on;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+    
+    # 视频代理配置 - 最右
+    location ~ ^/proxy/zuiyou/(.+)$ {
+        proxy_pass http://127.0.0.1:8086/api/proxy/decode/zuiyou/$1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # 大文件下载优化
+        client_max_body_size 2G;
+        client_body_timeout 300s;
+        
+        # 超时设置 - 针对大文件优化
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 300s;
+        proxy_read_timeout 300s;
+        
+        # 缓冲设置 - 大文件优化
+        proxy_buffering off;  # 关闭缓冲，直接流式传输
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        
+        # 连接优化
+        proxy_ignore_client_abort on;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+    
+    # 视频代理配置 - 通用
+    location ~ ^/proxy/general/(.+)$ {
+        proxy_pass http://127.0.0.1:8086/api/proxy/decode/general/$1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # 大文件下载优化
+        client_max_body_size 2G;
+        client_body_timeout 300s;
+        
+        # 超时设置 - 针对大文件优化
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 300s;
+        proxy_read_timeout 300s;
+        
+        # 缓冲设置 - 大文件优化
+        proxy_buffering off;  # 关闭缓冲，直接流式传输
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        
+        # 连接优化
+        proxy_ignore_client_abort on;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+}

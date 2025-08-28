@@ -1,0 +1,189 @@
+<cu-custom bgColor="bg-gradual-blue">
+  <view slot="content">视频解析</view>
+</cu-custom>
+
+<view class="cu-card case" bindtap="mtCps">
+  <view class="cu-item shadow">
+    <view class="image">
+      <image src="{{topMiniImg}}" mode="widthFix"></image>
+      <view class="cu-tag bg-yellow">{{topMiniTitle}}</view>
+      <view class="cu-bar bg-shadeBottom">
+      </view>
+    </view>
+  </view>
+</view>
+
+
+<view class="cu-list menu card-menu margin-top" style="margin-top:-1%">
+  <view class="cu-item">
+    <view class="content">
+      <image wx:for="{{videoIcon}}" wx:key="index" src="{{item.imgPath}}" class="png" mode="aspectFit"></image>
+    </view>
+    <view class="cu-tag line-blue">
+				可用平台
+			</view>
+  </view>
+
+
+  <view class="cu-item {{menuArrow?'arrow':''}}">
+      <view class="content">
+        <text class="cuIcon-warn text-green"></text>
+        <text class="text-grey">注意</text>
+      </view>
+      <view class="action">
+        <text class="text-grey text-sm">如果出现解析失败的情况请退出重试</text>
+      </view>
+    </view>
+
+  <view class="cu-item">
+    <view class="content">
+      <text class="cuIcon-link text-green"></text>
+      <text class="text-grey">链接</text>
+    </view>
+    <view class="action">
+      <text class="text-grey text-sm">{{shortVideoUrl}}</text>
+      <button class="cu-tag line-green" wx:if="{{!shortVideoUrl}}" bindtap="copy">手动粘贴</button>
+    </view>
+  </view>
+
+  <navigator class="cu-item arrow" url="../photos/photos" open-type="navigate" hover-class="none">
+      <view class="content">
+        <text class="cuIcon-formfill text-red"></text>
+        <text class="text-grey">本地解析记录（半小时内）</text>
+      </view>
+      <view class="action">
+        <text class="text-grey text-sm">只保留半小时</text>
+      </view>
+    </navigator>
+</view>
+
+
+<view class="padding flex flex-direction" wx:if="{{isButton}}">
+  <button bindtap="submit" class="cu-btn bg-blue lg">
+    <text >一键去除视频水印</text>
+  </button>
+</view>
+<view class="padding flex flex-direction" wx:if="{{!isButton}}">
+  <button bindtap="submit" class="cu-btn bg-blue lg" type="" disabled>
+   <text  class="cuIcon-loading iconfont-spin"></text>
+   解析中
+  </button>
+</view>
+
+
+
+<view class="cu-modal {{isShow?'show':''}}">
+  <view class="cu-dialog">
+    <video src="{{url}}" controls="false" autoplay="true" muted="true" style="margin: 25px 0px 0px">
+      <view class="cu-bar justify-end text-blue">
+        <view class="action" bindtap="hideModal">
+          <text class="cuIcon-close "></text>
+        </view>
+      </view>
+    </video>
+    <view class="cu-bar bg-white">
+      <view class="action margin-0 flex-sub solid-left text-blue" bindtap="saveVideo">保存到相册</view>
+    </view>
+  </view>
+</view>
+
+<!-- 图片集模态框 -->
+<view class="cu-modal {{isImageShow?'show':''}}">
+  <view class="cu-dialog" style="width: 90%; max-height: 80%;">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">图片集</view>
+      <view class="action" bindtap="hideModal">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+    <scroll-view scroll-y="true" style="max-height: 60vh;">
+       <view class="padding-sm">
+         <view wx:for="{{imageAtlas}}" wx:key="index" class="margin-bottom">
+           <view class="grid col-1 grid-square">
+             <view class="bg-img" style="background-image:url({{item}});"></view>
+           </view>
+           <view class="padding-xs text-center">
+             <button class="cu-btn bg-blue sm" data-url="{{item}}" bindtap="saveImage">
+               <text class="cuIcon-download margin-right-xs"></text>保存图片
+             </button>
+           </view>
+         </view>
+       </view>
+     </scroll-view>
+     <view class="cu-bar bg-white">
+       <view class="action margin-0 flex-sub text-center">
+         <button class="cu-btn bg-green" bindtap="saveAllImages">
+           <text class="cuIcon-download margin-right-xs"></text>全部保存
+         </button>
+       </view>
+     </view>
+  </view>
+</view>
+<!-- 下载进度模态框 -->
+<view class="cu-modal {{showProgress?'show':''}}">
+  <view class="cu-dialog" style="width: 80%;">
+    <view class="cu-bar bg-white justify-center">
+      <view class="content">下载进度</view>
+    </view>
+    <view class="padding">
+      <view class="text-center margin-bottom">
+        <text class="text-lg text-bold">{{downloadProgress}}%</text>
+      </view>
+      <view class="cu-progress round">
+        <view class="bg-green" style="width: {{downloadProgress}}%;"></view>
+      </view>
+      <view class="margin-top-sm text-center">
+        <view class="text-sm text-gray">{{downloadStatus}}</view>
+        <view class="text-sm text-gray" wx:if="{{downloadSpeed}}">速度: {{downloadSpeed}}</view>
+        <view class="text-sm text-gray" wx:if="{{estimatedTime}}">预计剩余: {{estimatedTime}}</view>
+      </view>
+      <view class="cu-bar bg-white justify-center margin-top">
+        <view class="action">
+          <button class="cu-btn bg-red sm" bindtap="cancelDownload">
+            <text class="cuIcon-close margin-right-xs"></text>取消下载
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 原有的简单加载提示（用于图片保存等其他场景） -->
+<view class='cu-load load-modal' wx:if="{{isDownload && !showProgress}}">
+  <view class='gray-text'>{{contentType === 'image' ? '图片保存中' : '视频保存中'}}</view>
+</view>
+
+
+<view class="cu-modal show" wx:if="{{isUrlDownload}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">微信域解析异常</view>
+      <view class="action" bindtap="hideModal">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+    <view>
+      你可以复制以下链接到浏览器进行下载
+    </view>
+    <view class="padding-xl">
+      <text style="-webkit-line-clamp: 2;">{{shortUrl}}</text>
+    </view>
+    <view class="cu-bar bg-white justify-end">
+      <view class="action">
+        <button class="cu-btn bg-blue margin-left" bindtap="prevent">复制</button>
+      </view>
+    </view>
+  </view>
+</view>
+
+
+<view class="cu-card case" bindtap="mtCps">
+  <view class="cu-item shadow">
+    <view class="image">
+      <image src="/images/tabbar/guid.png" mode="widthFix"></image>
+    </view>
+  </view>
+</view>
+
+<!-- 为底部tabbar预留空间 -->
+<view class="cu-tabbar-height"></view>
