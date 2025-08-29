@@ -28,18 +28,32 @@ Component({
     downloadStatus: '',
     downloadTask: null,
     showProgress: false,
-    estimatedTime: ''
+    estimatedTime: '',
+
   },
 
   //组件的生命周期
   lifetimes: {
     created: function () {
       var that = this;
-        if (!wx.getStorageSync('openId')) {
-        //初始化次数及信息
-        var urlContent = app.globalData.url + "wx/login"
-        request.requestPostApi(urlContent, {}, this, null, function (res) {
-          }) 
+      if (!wx.getStorageSync('openId')) {
+        // 先调用微信登录获取code
+        wx.login({
+          success: function(loginRes) {
+            if (loginRes.code) {
+              // 调用后端auth接口获取openId
+              var authUrl = app.globalData.url + "wx/auth";
+              request.requestPostApi(authUrl, {
+                js_code: loginRes.code
+              }, that, function (authResponse) {
+                if (authResponse.status == 200 && authResponse.data.openId) {
+                  // 保存openId到本地
+                  wx.setStorageSync('openId', authResponse.data.openId);
+                }
+              });
+            }
+          }
+        });
       } 
 
       //初始化头部小程序跳转信息
@@ -68,6 +82,8 @@ Component({
   },
   //组件的函数
   methods: {
+
+
     openVideoInfo: function(){
       wx.navigateTo({
         url: 'test?id=1'
