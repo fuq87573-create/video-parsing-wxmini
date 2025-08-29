@@ -1,4 +1,4 @@
-﻿const request = require('../../utils/request.js');
+const request = require('../../utils/request.js');
 const app = getApp();
 Component({
   options: {
@@ -13,16 +13,33 @@ Component({
     continuousSignDays: 0,
     rewardPoints: 10,
     errorMsg: '',
-    todaySignin: false  // 默认未签到状态
+    todaySignin: false,  // 默认未签到状态
+    avatarUrl: '',
+    nickName: '',
+    nickNameSet: false,  // 标记昵称是否已设置
+    loading: false  // 加载状态
   },
   attached() {
     let that = this;
+    
+    // 获取用户信息
+    const userInfo = wx.getStorageSync('userInfo');
+    if (userInfo && userInfo.avatarUrl && userInfo.nickName) {
+      that.setData({
+        avatarUrl: userInfo.avatarUrl,
+        nickName: userInfo.nickName,
+        nickNameSet: userInfo.nickName && userInfo.nickName !== '微信用户'
+      });
+    }
+    
     numDH();
     function numDH() {
       var urlContent = app.globalData.url + "wx/login"
       request.requestPostApi(urlContent, {}, this, function (res) {
         
-        if (res.status == 200) {  // 修改状态码为200
+        if (res.status == 200) {
+
+          
           that.setData({
             starCount: that.coutNum(res.data.signInSum || 0),
             visitTotal: that.coutNum(res.data.points || 0),
@@ -73,6 +90,11 @@ Component({
       })
     },
     showQrcode() {
+      // 显示加载框
+      this.setData({
+        loading: true
+      });
+      
       // 通过后端API获取作者微信二维码
       const app = getApp();
       const imageUrl = app.globalData.url + 'static/images/FQ.jpg';
@@ -81,6 +103,11 @@ Component({
       wx.downloadFile({
         url: imageUrl,
         success: (res) => {
+          // 隐藏加载框
+          this.setData({
+            loading: false
+          });
+          
           if (res.statusCode === 200) {
             wx.previewImage({
               urls: [imageUrl],
@@ -96,6 +123,11 @@ Component({
           }
         },
         fail: (err) => {
+          // 隐藏加载框
+          this.setData({
+            loading: false
+          });
+          
           wx.showModal({
             title: '网络错误',
             content: `请求失败: ${err.errMsg}\n请求URL: ${imageUrl}\n请检查网络连接和服务器状态`,
@@ -167,6 +199,8 @@ Component({
       })
     },
     
+
+    
     showToast: function(text) {
       wx.showToast({
         title: text,
@@ -174,6 +208,104 @@ Component({
         duration: 2000,
         mask: true
       })
+    },
+    
+    // 选择头像
+    onChooseAvatar: function(e) {
+      const { avatarUrl } = e.detail;
+      this.setData({
+        avatarUrl: avatarUrl
+      });
+      this.saveAvatarToServer(avatarUrl);
+    },
+    
+    // 昵称输入
+    bindNicknameInput: function(e) {
+      // 如果昵称已设置，则不允许修改
+      if (this.data.nickNameSet) {
+        return;
+      }
+      this.setData({
+        nickName: e.detail.value
+      });
+    },
+    
+    // 昵称输入完成
+    bindNicknameBlur: function(e) {
+      // 如果昵称已设置，则不允许修改
+      if (this.data.nickNameSet) {
+        return;
+      }
+      const nickName = e.detail.value.trim();
+      if (nickName) {
+        this.saveNicknameToServer(nickName);
+      }
+    },
+    
+    // 保存头像到服务器
+    saveAvatarToServer: function(avatarUrl) {
+      const openId = wx.getStorageSync('openId');
+      if (!openId) {
+        this.showToast('请先登录');
+        return;
+      }
+      
+      // 获取当前昵称，如果没有则使用默认值
+      const currentNickName = this.data.nickName || '微信用户';
+      
+      const params = {
+        openId: openId,
+        avatarUrl: avatarUrl,
+        nickName: currentNickName
+      };
+      
+      request.requestPostApi(app.globalData.url + 'wx/updateUserInfo', params, this, 
+        function(res) {
+          if (res.status === 200) {
+            // 更新本地缓存
+            const userInfo = wx.getStorageSync('userInfo') || {};
+            userInfo.avatarUrl = avatarUrl;
+            wx.setStorageSync('userInfo', userInfo);
+          }
+        },
+        function(res) {
+        }
+      );
+    },
+    
+    // 保存昵称到服务器
+    saveNicknameToServer: function(nickName) {
+      const openId = wx.getStorageSync('openId');
+      if (!openId) {
+        this.showToast('请先登录');
+        return;
+      }
+      
+      // 获取当前头像，如果没有则使用默认值
+      const currentAvatarUrl = this.data.avatarUrl || '/images/default-avatar.png';
+      
+      const params = {
+        openId: openId,
+        nickName: nickName,
+        avatarUrl: currentAvatarUrl
+      };
+      
+      request.requestPostApi(app.globalData.url + 'wx/updateUserInfo', params, this,
+        function(res) {
+          if (res.status === 200) {
+            // 更新本地缓存
+            const userInfo = wx.getStorageSync('userInfo') || {};
+            userInfo.nickName = nickName;
+            wx.setStorageSync('userInfo', userInfo);
+            // 标记昵称已设置
+            this.setData({
+              nickNameSet: true
+            });
+          }
+        },
+        function(res) {
+        }
+      );
     }
   }
 })
