@@ -23,7 +23,18 @@ Page({
   onLoad: function (options) {
     var thar = this;
     var urlContent = app.globalData.url + "video/getParsingInfo"
-    request.requestGetApi(urlContent, {}, this, function (res) {
+    // 获取openId参数
+    let openId = wx.getStorageSync('openId');
+    if (!openId) {
+      thar.showToast('请先登录');
+      return;
+    }
+    
+    var params = {
+      openId: openId
+    };
+    
+    request.requestGetApi(urlContent, params, this, function (res) {
       if (res.status == 200) {
         if(res.data && res.data.records && res.data.records.length > 0){
           // 处理图片集数据和日期格式化
