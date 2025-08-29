@@ -44,3 +44,32 @@ map,.mapBox{
   width: 750rpx;
   height: 300rpx;
 }
+
+/* 用户信息样式 */
+.avatar-wrapper {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  overflow: hidden;
+  width: 100rpx;
+  height: 100rpx;
+}
+
+.avatar-wrapper::after {
+  border: none;
+}
+
+.avatar-wrapper .cu-avatar {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50%;
+  border: none;
+  transition: all 0.3s ease;
+  object-fit: cover;
+}
+
+.avatar-wrapper:active .cu-avatar {
+  transform: scale(0.95);
+}
