@@ -219,6 +219,10 @@ public class WechatService {
         response.put("continuousSignDays", user.getContinuousSignDays());
         response.put("lastSignTime", user.getLastSignTime());
         
+        // 添加用户头像和昵称信息
+        response.put("avatarUrl", user.getAvatarUrl());
+        response.put("nickName", user.getNickname());
+        
         // 判断今日是否已签到
         boolean todaySignin = user.getLastSignTime() != null && 
             user.getLastSignTime().toLocalDate().equals(LocalDate.now());
@@ -409,6 +413,28 @@ public class WechatService {
         result.put("msg", "功能开发中");
         result.put("data", new HashMap<>());
         return result;
+    }
+
+    /**
+     * 更新用户信息（昵称和头像）
+     *
+     * @param openId 用户openId
+     * @param nickName 用户昵称
+     * @param avatarUrl 用户头像URL
+     */
+    @Transactional
+    public void updateUserInfo(String openId, String nickName, String avatarUrl) {
+        Optional<User> userOptional = userRepository.findByOpenId(openId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setNickname(nickName);
+            user.setAvatarUrl(avatarUrl);
+            userRepository.save(user);
+            log.info("用户信息更新成功: openId={}, nickName={}", openId, nickName);
+        } else {
+            log.warn("用户不存在: openId={}", openId);
+            throw new RuntimeException("用户不存在");
+        }
     }
 
     /**
