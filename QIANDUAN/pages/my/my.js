@@ -97,7 +97,7 @@ Component({
       
       // 通过后端API获取作者微信二维码
       const app = getApp();
-      const imageUrl = app.globalData.url + 'static/images/FQ.jpg';
+      const imageUrl = app.globalData.url + 'static/images/yourQrcode.jpg';
       
       // 先测试图片是否可以访问
       wx.downloadFile({
@@ -116,7 +116,7 @@ Component({
           } else {
             wx.showModal({
               title: '图片加载失败',
-              content: `服务器返回${res.statusCode}错误，图片文件不存在。\n请求URL: ${imageUrl}\n请确认后端服务器 static/images/FQ.jpg 文件是否存在。`,
+              content: `服务器返回${res.statusCode}错误，图片文件不存在。\n请求URL: ${imageUrl}\n请确认后端服务器 static/images/yourQrcode.jpg 文件是否存在。`,
               showCancel: false,
               confirmText: '知道了'
             })
