@@ -1,0 +1,122 @@
+<view class="page">
+  <view class="UCenter-bg">
+    <image src="" mode="scaleToFill" class="gif-wave"></image>
+  </view>
+  <view class="padding bg-white radius">
+    <!-- 用户信息区域 -->
+  <view class="cu-card case no-card">
+    <view class="cu-item shadow">
+      <view class="flex align-center padding">
+        <!-- 头像区域 -->
+        <view class="cu-avatar-xl margin-right">
+          <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+            <image class="cu-avatar xl" src="{{avatarUrl || 'https://ossweb-img.qq.com/images/lol/web201310/skin/big84000.jpg'}}" mode="aspectFill"></image>
+          </button>
+        </view>
+        <!-- 昵称区域 -->
+        <view class="flex-sub">
+          <input class="text-black text-lg" type="nickname" placeholder="点击设置昵称" value="{{nickName || '微信用户'}}" bindinput="bindNicknameInput" bindblur="bindNicknameBlur" disabled="{{nickNameSet}}" />
+          <view class="text-gray text-sm margin-top-xs">{{nickNameSet ? '昵称已设置，不可修改' : '欢迎使用'}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+    
+    <!-- 统计数据区域 -->
+    <view class="flex text-center">
+      <view class="flex-sub padding-sm">
+        <view class="text-xxl text-blue margin-bottom-xs">{{starCount}}</view>
+        <view class="text-sm text-gray">
+          <text class="cuIcon-squarecheck margin-right-xs"></text>累计签到
+        </view>
+      </view>
+      <view class="flex-sub padding-sm" style="border-left: 1px solid #f0f0f0; border-right: 1px solid #f0f0f0;">
+        <view class="text-xxl text-orange margin-bottom-xs">{{visitTotal}}</view>
+        <view class="text-sm text-gray">
+          <text class="cuIcon-vip margin-right-xs"></text>积分
+        </view>
+      </view>
+      <view class="flex-sub padding-sm">
+        <view class="text-xxl text-green margin-bottom-xs">{{continuousSignDays}}</view>
+        <view class="text-sm text-gray">
+          <text class="cuIcon-calendar margin-right-xs"></text>连续签到
+        </view>
+      </view>
+    </view>
+    
+    <!-- 签到奖励说明 -->
+    <view class="margin-top-lg text-center padding-top-sm" style="border-top: 1px solid #f0f0f0;">
+      <view class="text-xs text-gray margin-bottom-xs">📅 每日签到可获得10积分奖励</view>
+      <view class="text-xs text-gray">🎁 连续签到天数越多，奖励越丰厚</view>
+    </view>
+  </view>
+  <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg radius">
+
+    <view class="cu-item" bindtap="sign">
+      <view class="content">
+        <text class="cuIcon-{{todaySignin ? 'check' : 'we'}} {{todaySignin ? 'text-green' : 'text-blue'}}"></text>
+        <text class="text-grey">{{todaySignin ? '今日已签到' : '每日签到'}}</text>
+      </view>
+      <view class="action">
+        <text class="text-grey text-sm">{{todaySignin ? '已完成' : '点击签到'}}</text>
+        <text class="cuIcon-right text-grey"></text>
+      </view>
+    </view>
+
+    <view class="cu-item arrow" bindtap="showQrcode">
+      <view class="content">
+        <text class="cuIcon-weixin text-green"></text>
+        <text class="text-grey">联系作者</text>
+      </view>
+    </view>
+  </view>
+  <view class="cu-tabbar-height"></view>
+
+  <view class="cu-modal {{success?'show':''}}">
+    <view class="cu-dialog">
+      <view class="cu-bar bg-white justify-end">
+        <view class="content">友情提示</view>
+        <view class="action" bindtap="hideModal">
+          <text class="cuIcon-close text-red"></text>
+        </view>
+      </view>
+      <view class="padding-xl">
+        <view class="text-center margin-bottom">
+          <text class="cuIcon-check text-green text-xxl"></text>
+        </view>
+        <view class="text-center">
+          签到成功！获得积分 <text style="color:red">+{{rewardPoints}}</text>
+        </view>
+        <view class="text-center margin-top-sm text-sm text-grey">
+          连续签到 {{continuousSignDays}} 天
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="cu-modal {{error?'show':''}}">
+    <view class="cu-dialog">
+      <view class="cu-bar bg-white justify-end">
+        <view class="content">友情提示</view>
+        <view class="action" bindtap="hideModal">
+          <text class="cuIcon-close text-red"></text>
+        </view>
+      </view>
+      <view class="padding-xl">
+        <view class="text-center margin-bottom">
+          <text class="cuIcon-close text-red text-xxl"></text>
+        </view>
+        <view class="text-center">
+          <text style="color:red">{{errorMsg || '一天签到一次～请勿重复签到'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载框 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-box">
+      <view class="cu-load load-modal"></view>
+    </view>
+  </view>
+
+</view>
