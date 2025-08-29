@@ -60,7 +60,7 @@ video-parsing-wxmini/
 | 抖音 (Douyin) | ✅ | ✅ | 支持短视频和长视频 |
 | 快手 (Kuaishou) | ✅ | ✅ | 支持普通视频 |
 | 小红书 (Xiaohongshu) | ✅ | ✅ | 支持图片和视频 |
-| 哔哩哔哩 (Bilibili) | ✅ | ❌ | 支持普通视频 |
+| 哔哩哔哩 (Bilibili) | ✅ | ✅ | 支持普通视频 |
 | 微博 (Weibo) | ✅ | ✅ | 支持视频内容 |
 | 西瓜视频 (Xigua) | ✅ | ✅ | 支持短视频 |
 | 好看视频 (Haokan) | ✅ | ✅ | 支持短视频 |
